@@ -2,15 +2,18 @@
 
     include("database.php");
     session_start();
-
-    if($_SERVER["REQUEST_METHOD"] == "POST") {
-      $sql = "INSERT INTO users(name, email, password) VALUES ('" . $_POST["name"] . "','" . $_POST["email"] . "','" . $_POST["password"] . "')";
-
     
-if (mysqli_query($db, $sql)) {
-    echo "Welcome " . $_POST["name"];
+    if (isset($_SESSION['username'])) {
+        header("location:main.php");
+    }
+    elseif ($_SERVER["REQUEST_METHOD"] == "POST") {
+      $sql = "INSERT INTO Customer(CEmail, Age, CPassword) VALUES ('" . $_POST["email"] . "','" . $_POST["age"] . "','" . $_POST["password"] . "')";
+    if (mysqli_query($db, $sql)) {
+    $_SESSION["username"] =  $_POST["email"];
+
+    header("location:main.php"); 
 } else {
-    echo "Error: " . $sql . "<br>" . mysqli_error($db);
+    echo "Email already used, try another";
 }
 
 mysqli_close($db);

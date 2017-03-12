@@ -6,20 +6,40 @@ if (!db ) {
     die("Connection failed: " . mysqli_connect_error());
 } 
 
-// sql to create table
-$sql = "CREATE TABLE users(
-id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY, 
-name VARCHAR(30) NOT NULL,
-email VARCHAR(50),
-reg_date TIMESTAMP,
-password VARCHAR(30)
-)";
-
-if (mysqli_query($db, $sql)) {
-    echo "Table MyGuests created successfully";
-} else {
-    echo "Error creating table: " . mysqli_error($db);
+mysqli_query($db, 'SET foreign_key_checks = 0');
+if ($result = mysqli_query($db, "SHOW TABLES"))
+{
+    while($row = $result->fetch_array(MYSQLI_NUM))
+    {
+        mysqli_query($db, 'DROP TABLE IF EXISTS '.$row[0]);
+    }
 }
 
-mysqli_close($db);
+mysqli_query($db, 'SET foreign_key_checks = 1');
+
+$filename = 'database.sql';
+
+// Temporary variable, used to store current query
+$templine = '';
+// Read in entire file
+$lines = file($filename);
+// Loop through each line
+foreach ($lines as $line)
+{
+// Skip it if it's a comment
+if (substr($line, 0, 2) == '--' || $line == '')
+    continue;
+
+// Add this line to the current segment
+$templine .= $line;
+// If it has a semicolon at the end, it's the end of the query
+if (substr(trim($line), -1, 1) == ';')
+{
+    // Perform the query
+    mysqli_query($db, $templine) or print('Error performing query \'<strong>' . $templine . '\': ' . mysql_error() . '<br /><br />');
+    // Reset temp variable to empty
+    $templine = '';
+}
+}
+ echo "Tables imported successfully";
 ?>

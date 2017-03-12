@@ -1,14 +1,15 @@
 <?php
    include("database.php");
    session_start();
-   
+   if (isset($_SESSION['username'])) {
+        header("location:main.php");
+   }
    if($_SERVER["REQUEST_METHOD"] == "POST") {
       // username and password sent from form 
-      
       $myusername = mysqli_real_escape_string($db,$_POST['email']);
       $mypassword = mysqli_real_escape_string($db,$_POST['password']); 
       
-      $sql = "SELECT id FROM users WHERE name = '$myusername' and email = '$mypassword'";
+      $sql = "SELECT * FROM Customer WHERE CEmail = '$myusername' and CPassword = '$mypassword'";
       $result = mysqli_query($db,$sql);
       $row = mysqli_fetch_array($result,MYSQLI_ASSOC);
       $active = $row['active'];
@@ -18,11 +19,10 @@
       // If result matched $myusername and $mypassword, table row must be 1 row
 		
       if($count == 1) {
-         session_register("myusername");
-         $_SESSION['login_user'] = $myusername;
-         echo "logged in"   
+         $_SESSION["username"] = $myusername;
+         header("Location: welcome.php");
       }else {
-         $error = "Your Login Name or Password is invalid";
+        echo "Your Login Name or Password is invalid";
       }
    }
 ?>
@@ -34,10 +34,11 @@
    
    <body>
 	
-     <form action = "" method = "post">
-                  UserName: <input type = "text" name = "username"> <br />
+     <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">  
+                  Email: <input type = "text" name = "email"> <br />
                   Password: <input type = "password" name = "password"><br />
                   <input type = "submit" value = " Submit "/><br />
                </form>
+               <a href="user.php"> Register here </a>
    </body>
 </html>
