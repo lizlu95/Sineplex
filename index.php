@@ -9,7 +9,7 @@
       $myusername = mysqli_real_escape_string($db,$_POST['email']);
       $mypassword = mysqli_real_escape_string($db,$_POST['password']); 
       
-      $sql = "SELECT * FROM Customer WHERE CEmail = '$myusername' and CPassword = '$mypassword'";
+      $sql = "SELECT * FROM customer WHERE CEmail = '$myusername' and CPassword = '$mypassword'";
       $result = mysqli_query($db,$sql);
       $row = mysqli_fetch_array($result,MYSQLI_ASSOC);
       $active = $row['active'];

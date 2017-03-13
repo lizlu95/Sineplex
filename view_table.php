@@ -1,7 +1,7 @@
 <?php
    include("database.php");
 
-	$query = "SELECT * FROM Customer"; //You don't need a ; like you do in SQL
+	$query = "SELECT * FROM customer"; //You don't need a ; like you do in SQL
 	$result = mysqli_query($db, $query);
 
 	echo "<table>"; // start a table tag in the HTML
