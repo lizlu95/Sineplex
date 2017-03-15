@@ -2,20 +2,10 @@
     include("database.php");
 
 // Check connection
-if (!db ) {
+if (!$db ) {
     die("Connection failed: " . mysqli_connect_error());
 } 
 
-mysqli_query($db, 'SET foreign_key_checks = 0');
-if ($result = mysqli_query($db, "SHOW TABLES"))
-{
-    while($row = $result->fetch_array(MYSQLI_NUM))
-    {
-        mysqli_query($db, 'DROP TABLE IF EXISTS '.$row[0]);
-    }
-}
-
-mysqli_query($db, 'SET foreign_key_checks = 1');
 
 $filename = 'database.sql';
 
@@ -42,4 +32,5 @@ if (substr(trim($line), -1, 1) == ';')
 }
 }
  echo "Tables imported successfully";
+ header("location:index.php");
 ?>
