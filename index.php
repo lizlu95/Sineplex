@@ -41,6 +41,6 @@
                </form>
                <a href="user.php"> Register here </a>
                <br>
-               <a href="employee/employee.php"> Employee? Register here </a>
+               <a href="employee/index.php"> Employee? Login here </a>
    </body>
 </html>

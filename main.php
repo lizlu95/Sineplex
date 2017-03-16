@@ -8,6 +8,28 @@ if (!isset($_SESSION['username'])) {
 if (!isset($_SESSION['sqlRequest'])){
     $_SESSION['sqlRequest'] = "SELECT a.ArrangeId, a.Showtime, t.Name as TName, a.Location, a.Name, a.SeatsLeft FROM arrange as a, theater as t WHERE a.Location = t.Location;";
 }
+// buying ticket
+if ($_SERVER["REQUEST_METHOD"] == "GET"){
+  if (isset($_GET["buyTicket"])){
+    //todo: check seats
+    // get current seats
+    $sql = "SELECT SeatsLeft from arrange where ArrangeId = " . $_GET["buyTicket"] . ";";
+    $seatsQuery = mysqli_query($db, $sql);
+    $row = mysqli_fetch_array($seatsQuery);
+    $seats =  $row[0];
+    if ($seats > 0){
+      $Updatesql = "UPDATE arrange Set SeatsLeft = " . ($seats-1) . " WHERE ArrangeId = " . $_GET["buyTicket"] . ";";
+      mysqli_query($db, $Updatesql); 
+      echo "Update query: " . $Updatesql . "<br>";
+      $sql = "INSERT into ticket(AuditoriumNo, CEmail, ArrangeId, SeatsNo) VALUES (1, '" . $_SESSION['username'] ."','" .$_GET["buyTicket"] ."', 1);";
+      mysqli_query($db, $sql);
+      echo "Insert query: " . $sql . "<br>";
+      header("location:index.php");
+    }else{
+      echo "ERROR: No Seats Available. <br>";
+    }
+  }
+}
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
   // assume this post came from this page and not some external source...
   // begin constructing sql statement for movie filtering
@@ -106,23 +128,23 @@ Query is <?= $_SESSION['sqlRequest']?> <br>
     </table>
     <br><br>
     <script>
-function highlight(e) {
-    if (selected[0]) selected[0].className = '';
-    e.target.parentNode.className = 'selected';
-}
-
-var table = document.getElementById('mainTable'),
-    selected = table.getElementsByClassName('selected');
-table.onclick = highlight;
-
-function fnselect(){
-    if ($("tr.selected td:first" ).html() == null){
-      alert("You must select a show!");
-    }else{
-      alert($("tr.selected td:first" ).html());
+    function highlight(e) {
+        if (selected[0]) selected[0].className = '';
+        e.target.parentNode.className = 'selected';
     }
-    
-}
+
+    var table = document.getElementById('mainTable'),
+    selected = table.getElementsByClassName('selected');
+    table.onclick = highlight;
+
+    function fnselect(){
+        if ($("tr.selected td:first" ).html() == null){
+          alert("You must select a show!");
+        }else{
+          window.location.replace('main.php?buyTicket=' + $("tr.selected td:first" ).html());
+        }
+        
+    }
 </script>
     </body>
 </html>
