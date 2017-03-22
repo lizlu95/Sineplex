@@ -6,7 +6,7 @@ if (!isset($_SESSION['username'])) {
 }
 
 if (!isset($_SESSION['sqlRequest'])){
-    $_SESSION['sqlRequest'] = "SELECT a.ArrangeId, a.Showtime, t.Name as TName, a.Location, a.Name, a.SeatsLeft FROM arrange as a, theater as t WHERE a.Location = t.Location;";
+    $_SESSION['sqlRequest'] = "SELECT a.ArrangeId as ShowID, a.Showtime, t.Name as TheaterName, a.Location, a.Name, a.SeatsLeft as Seats FROM arrange as a, theater as t WHERE a.Location = t.Location;";
 }
 // buying ticket
 if ($_SERVER["REQUEST_METHOD"] == "GET"){
@@ -30,10 +30,14 @@ if ($_SERVER["REQUEST_METHOD"] == "GET"){
     }
   }
 }
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
   // assume this post came from this page and not some external source...
   // begin constructing sql statement for movie filtering
-  $_SESSION['sqlRequest'] = "SELECT a.ArrangeId, a.Showtime, t.Name as TName, a.Location, a.Name, a.SeatsLeft FROM arrange as a, theater as t WHERE a.Location = t.Location and 1 ";
+  if (isset($_POST['searchTickets'])) {
+    $_SESSION['sqlRequest'] = "SELECT a.ArrangeId as ShowID, a.Showtime, t.Name as Theater, a.Location, a.Name, a.SeatsLeft as Seats FROM arrange as a, theater as t, ticket as ti WHERE a.Location = t.Location and ti.ArrangeId = a.ArrangeId and ti.CEmail LIKE '" . $_SESSION['username'] . "' and 1 ";
+  } else 
+    $_SESSION['sqlRequest'] = "SELECT a.ArrangeId as ShowID, a.Showtime, t.Name as Theater, a.Location, a.Name, a.SeatsLeft as Seats FROM arrange as a, theater as t WHERE a.Location = t.Location and 1 ";
 
   // date filter
   if (isset($_POST['fromDateCb']) and !isset($_POST['toDateCb'])){
@@ -54,10 +58,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   }
 
   //theater name
-    if (isset($_POST["theaterNameCb"])){
+  if (isset($_POST["theaterNameCb"])){
     $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . " AND t.Name LIKE '%" . $_POST['theaterName'] . "%'";
   }
+
+  //arrangeid name
+  if (isset($_POST["showIdCb"])){
+    $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . " AND a.ArrangeId = " . $_POST['showId'];
+  }
+  // end queries
   $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . " and 1;";
+  if (isset($_POST['statsOperation'])) {
+    if($_POST['statsOperation'] == "statsAvgSeats"){
+        $_SESSION['sqlRequest'] = "SELECT a.ArrangeId as ShowID, t.Name as Theater, a.Name, a.SeatsLeft as Seats from arrange as a inner join theater as t on a.Location = t.Location where SeatsLeft ";
+        if ($_POST['statsAvgSeatsOp'] == "greater"){
+          $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . ">";
+        }else
+          $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . "<";
+        $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . "= (SELECT avg(SeatsLeft) from arrange);";
+    } elseif($_POST['statsOperation'] == "statsAvgDuration"){
+
+        $_SESSION['sqlRequest'] = "SELECT m.Name, m.Duration, t.avg as Average from movie as m, (SELECT AVG(Duration) as avg from movie) as t where Duration ";
+        if ($_POST['statsAvgDurationOp'] == "greater"){
+          $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . ">";
+        }else
+          $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . "<";
+        $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . "= (SELECT avg(Duration) as avg from movie);";
+      }
+  }
 }
 ?>
 <html>
@@ -87,41 +115,62 @@ Query is <?= $_SESSION['sqlRequest']?> <br>
 
     
     <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">  
-                  <input type="checkbox" name="fromDateCb" checked=true value="Yes" /> (from/on) Date: <input type = "datetime-local" name = "fromDate" value="2017-03-03T00:00"> <br />
+                  <input type="checkbox" name="movieNameCb"  checked=true value="Yes" /> Movie Title: <input type = "text" name = "movieName"><br />
+                  <input type="checkbox" name="fromDateCb" value="Yes" /> (from/on) Date: <input type = "datetime-local" name = "fromDate" value="2017-03-03T00:00"> <br />
                   <input type="checkbox" name="toDateCb" value="Yes" /> (to) Date: <input type = "datetime-local" name = "toDate"> <br />
-                  <input type="checkbox" name="movieNameCb" value="Yes" /> Movie Title: <input type = "text" name = "movieName"><br />
                   <input type="checkbox" name="locationNameCb" value="Yes" /> Theatre Location: <input type = "text" name = "locationName"><br />
                   <input type="checkbox" name="theaterNameCb" value="Yes" /> Theatre Name: <input type = "text" name = "theaterName"><br />
-                  <input type = "submit" value = " Submit "/><br /> <input type='button' id='tst' value='Buy ticket(s) for select show' onclick='fnselect()' />
+                  <input type="checkbox" name="showIdCb" value="Yes" /> Show ID: <input type = "number" name = "showId"><br />
+                  <input type="checkbox" name="searchTickets" value="Yes" /> Search tickets instead? <br />
+                  <input type = "submit" value = " Submit "/><br /> <input type='button' value='Buy ticket(s) for select show' onclick='fnselect()' />
     </form>
+
+    More search filters: <br/>
+    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">  
+                    <input type="radio" name="statsOperation" value="statsAvgSeats" /> List Arranges with number of seats 
+                         <select name="statsAvgSeatsOp">
+                          <option value="greater">GREATER</option>
+                          <option value="less">LESS</option>
+                         </select>
+                    than or equal to average
+                    <br />
+                    <input type="radio" name="statsOperation" value="statsAvgDuration" /> List Movies with duration 
+                         <select name="statsAvgDurationOp">
+                            <option value="greater">GREATER</option>
+                            <option value="less">LESS</option>
+                         </select>
+                    than or equal to average duration
+                    <br />
+                  <input type = "submit" value = " Submit "/><br /> 
+    </form>
+
 <a href="logout.php">Logout</a>
 <br><br>
 
     <table id="mainTable">
         <tr >
-            <td>Show ID</td>
-            <td>Showtime</td>
-            <td>Theater</td>
-            <td>Location</td>
-            <td>Title</td>
-            <td>Seats</td>
-            <td></td>
+        <?php
+          $sql = $_SESSION['sqlRequest'];
+          $query = mysqli_query($db,$sql);
+          $row = mysqli_fetch_array($query);
+          if (sizeof($row) > 0){
+            $the_keys = array_keys($row);
+            for ($i=1; $i <sizeof($the_keys)+1; $i+=2){
+              echo "<td><b>".$the_keys[$i]."</b></td>";
+            }
+          }
+        ?>
         </tr>
         <?php
            $i = 0;
            $sql = $_SESSION['sqlRequest'];
            $query = mysqli_query($db,$sql);
            while ($row = mysqli_fetch_array($query)) {
-               $class = ($i == 0) ? "" : "alt";
-               echo "<tr class=\"".$class."\">";
-               echo "<td>".$row["ArrangeId"]."</td>";
-               echo "<td>".$row["Showtime"]."</td>";
-               echo "<td>".$row["TName"]."</td>";
-               echo "<td>".$row["Location"]."</td>";
-               echo "<td>".$row["Name"]."</td>";
-               echo "<td>".$row["SeatsLeft"]."</td>";
-               echo "</tr>";
-               $i = ($i==0) ? 1:0;
+            echo "<tr>";
+            for ($k=0; $k <sizeof($row)/2; $k+=1){
+              echo "<td>".$row[$k]."</td>";
+            }
+            $i = ($i==0) ? 1:0;
            }
 
         ?>
