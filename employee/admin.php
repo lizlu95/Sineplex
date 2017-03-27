@@ -41,6 +41,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       }else{
         echo "Unable to delete.";
       }
+    }elseif ($_POST['delOperation'] == "deleteTicket"){
+      $sql = "DELETE FROM ticket where ConfirmationNo = " . $_POST['delTicket'] . ";";
+      if (mysqli_query($db, $sql)) {
+        echo "Deletion Query: " . $sql ."<br>";
+      }else{
+        echo "Unable to delete.";
+      }
+
     }elseif ($_POST['delOperation'] == "deleteArranges"){
       $sql = "DELETE FROM arrange where ArrangeId LIKE '" . $_POST['delArrange'] . "';";
       if (mysqli_query($db, $sql)) {
@@ -67,9 +75,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   }
   elseif (isset($_POST['statsOperation'])){
     if ($_POST['statsOperation'] == "statsSeatsLeft"){
-      $_SESSION['sqlRequest'] = "SELECT Name, sum(SeatsLeft) as Seats from arrange group by Name order by ";
+      $_SESSION['sqlRequest'] = "SELECT Name, " . $_POST['statsSeatsLeftOp'] . "(SeatsLeft) from arrange group by Name order by ";
         if ($_POST['statsSeatsLeftOrder'] == "seats"){
-          $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . "sum(seatsLeft) ";
+          $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . $_POST['statsSeatsLeftOp'] . "(seatsLeft) ";
         }else
           $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . "name ";
         if ($_POST['statsSeatsLeftOrderBy'] == "desc"){
@@ -83,7 +91,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       }else
         $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . "<";
       $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . "= (SELECT avg(SeatsLeft) from arrange);";
+
+    }elseif($_POST['statsOperation'] == "statsSeatsPerTheater"){
+      $_SESSION['sqlRequest'] = "Select w.Location, " . $_POST['statsSeatsPerTheaterMinMax'] . "(w.m) as AvgSeatsLeft from (SELECT t.Location, avg(a.SeatsLeft) as m from theater as t, arrange as a where a.Location = t.Location GROUP BY t.Location) as w;";
+
+    }elseif($_POST['statsOperation'] == "statsSpecificMovie"){
+      $_SESSION['sqlRequest'] = "SELECT c.CEmail as Email from customer as c where c.CEmail = ANY (SELECT t.CEmail from ticket as t where t.ArrangeId = ANY (SELECT a.ArrangeId from arrange as a where a.Name LIKE '" . $_POST['statsSpecificMovieName'] . "'));";
     }
+
+
   }
   elseif (isset($_POST['insertOperation'])){
     if ($_POST['insertOperation'] == "insertArranges"){
@@ -146,6 +162,7 @@ Hello <?= $_SESSION['employeeId']?> <br>
                   <input type="radio" name="delOperation" value="deleteMovie" /> Delete Movie: <input type = "text" name = "delMovie"> <br />
                   <input type="radio" name="delOperation" value="deleteArranges" /> Delete Show <input type = "number" name = "delArrange"><br />
                   <input type="radio" name="delOperation" value="deleteTheatre" /> Delete Theatre <input type = "text" name = "delTheatre"><br />
+                  <input type="radio" name="delOperation" value="deleteTicket" /> Delete Ticket <input type = "text" name = "delTicket"><br />
                   <input type = "submit" value = " Submit "/><br /> 
     </form>
 
@@ -161,7 +178,15 @@ Hello <?= $_SESSION['employeeId']?> <br>
 
     Stats Operations: <br>
     <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">  
-                  <input type="radio" name="statsOperation" checked=true value="statsSeatsLeft" /> View Total Seats ordered by
+                  <input type="radio" name="statsOperation" checked=true value="statsSeatsLeft" /> View 
+                    <select name="statsSeatsLeftOp">
+                        <option value="min">min</option>
+                        <option value="max">max</option>
+                        <option value="count">count</option>
+                        <option value="sum">sum</option>
+                        <option value="avg">avg</option>
+                    </select>
+                    of Seats ordered by
                     <select name="statsSeatsLeftOrder">
                         <option value="movie">Movie Name</option>
                         <option value="seats">Seats Left</option>
@@ -172,11 +197,21 @@ Hello <?= $_SESSION['employeeId']?> <br>
                         <option value="asc">ASCE</option>
                     </select><br />
                     <input type="radio" name="statsOperation" value="statsAvgSeats" /> List Arranges with number of seats 
-                         <select name="statsAvgSeatsOp">
+                    <select name="statsAvgSeatsOp">
                         <option value="greater">GREATER</option>
                         <option value="less">LESS</option>
                     </select>
                     than or equal to average
+                    <br />
+                    <input type="radio" name="statsOperation" value="statsSeatsPerTheater" /> List the
+                    <select name="statsSeatsPerTheaterMinMax">
+                        <option value="min">MIN</option>
+                        <option value="max">MAX</option>
+                    </select>
+                    of the averages of seats left for all arranges, by theater.
+                    <br />
+                    <input type="radio" name="statsOperation" value="statsSpecificMovie" /> List all users that bought this movie:  
+                    <input type = "text" placeHolder="Exact Movie Name" name = "statsSpecificMovieName">
                     <br />
                   <input type = "submit" value = " Submit "/><br /> 
     </form>

@@ -5,6 +5,7 @@ DROP TABLE theater;
 DROP TABLE movie;
 DROP TABLE employee;
 DROP TABLE customer;
+SET FOREIGN_KEY_CHECKS=1;
 CREATE TABLE theater 
 ( 
 TheaterId int PRIMARY KEY AUTO_INCREMENT,
@@ -21,7 +22,7 @@ SeatsNo int,
 AuditoriumNo int,
 CEmail char(255),
 ArrangeId int,
-CONSTRAINT FK_ArrangeId FOREIGN KEY (ArrangeId) references Arrange(ArrangeId) ON DELETE CASCADE,
+CONSTRAINT FK_ArrangeId FOREIGN KEY (ArrangeId) references Arrange(ArrangeId),
 CONSTRAINT FK_CEmail FOREIGN KEY (CEmail) references Customer(CEmail) ON DELETE CASCADE
 );
 
@@ -57,7 +58,8 @@ Location char(255),
 Name char(255),
 SeatsLeft int,
 CONSTRAINT FK_Location FOREIGN KEY (Location) REFERENCES Theater(Location) ON DELETE CASCADE,
-CONSTRAINT FK_Name FOREIGN KEY (Name) REFERENCES Movie(Name) ON DELETE CASCADE
+CONSTRAINT FK_Name FOREIGN KEY (Name) REFERENCES Movie(Name) ON DELETE CASCADE,
+CONSTRAINT CHK_Seats CHECK (SeatsLeft>=0)
 );
 
 INSERT INTO `theater` (`Location`, `Name`, `OpenTime`, `CloseTime`) VALUES ('Highstreet Shopping Centre, 3122 Mount Lehman Rd J200, Abbotsford, BC V4X 2K9', 'Cineplex Cinemas Abbotsford and VIP', '08:00:00', '23:00:00');

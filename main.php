@@ -11,19 +11,20 @@ if (!isset($_SESSION['sqlRequest'])){
 // buying ticket
 if ($_SERVER["REQUEST_METHOD"] == "GET"){
   if (isset($_GET["buyTicket"])){
-    //todo: check seats
-    // get current seats
     $sql = "SELECT SeatsLeft from arrange where ArrangeId = " . $_GET["buyTicket"] . ";";
     $seatsQuery = mysqli_query($db, $sql);
     $row = mysqli_fetch_array($seatsQuery);
     $seats =  $row[0];
-    if ($seats > 0){
-      $Updatesql = "UPDATE arrange Set SeatsLeft = " . ($seats-1) . " WHERE ArrangeId = " . $_GET["buyTicket"] . ";";
+    // constraint check done here but creation of table already has CHECK constraint
+    if ($seats - $_GET["tickets"] >= 0){
+      $Updatesql = "UPDATE arrange Set SeatsLeft = " . ($seats-$_GET["tickets"]) . " WHERE ArrangeId = " . $_GET["buyTicket"] . ";";
       mysqli_query($db, $Updatesql); 
       echo "Update query: " . $Updatesql . "<br>";
-      $sql = "INSERT into ticket(AuditoriumNo, CEmail, ArrangeId, SeatsNo) VALUES (1, '" . $_SESSION['username'] ."','" .$_GET["buyTicket"] ."', 1);";
-      mysqli_query($db, $sql);
-      echo "Insert query: " . $sql . "<br>";
+      for ($x = $_GET["tickets"]; $x > 0; $x--) {
+        $sql = "INSERT into ticket(AuditoriumNo, CEmail, ArrangeId, SeatsNo) VALUES (1, '" . $_SESSION['username'] ."','" .$_GET["buyTicket"] ."', 1);";
+        mysqli_query($db, $sql);
+        echo "Insert query: " . $sql . "<br>";
+      }
       header("location:index.php");
     }else{
       echo "ERROR: No Seats Available. <br>";
@@ -34,11 +35,29 @@ if ($_SERVER["REQUEST_METHOD"] == "GET"){
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
   // assume this post came from this page and not some external source...
   // begin constructing sql statement for movie filtering
-  if (isset($_POST['searchTickets'])) {
-    $_SESSION['sqlRequest'] = "SELECT a.ArrangeId as ShowID, a.Showtime, t.Name as Theater, a.Location, a.Name, a.SeatsLeft as Seats FROM arrange as a, theater as t, ticket as ti WHERE a.Location = t.Location and ti.ArrangeId = a.ArrangeId and ti.CEmail LIKE '" . $_SESSION['username'] . "' and 1 ";
-  } else 
-    $_SESSION['sqlRequest'] = "SELECT a.ArrangeId as ShowID, a.Showtime, t.Name as Theater, a.Location, a.Name, a.SeatsLeft as Seats FROM arrange as a, theater as t WHERE a.Location = t.Location and 1 ";
-
+  // build selection/proj query
+    $_SESSION['sqlRequest'] = "SELECT a.ArrangeId as ShowID";
+    if (!isset($_POST['hideShowtimeCb'])){
+      $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . ", a.Showtime";
+    }
+    if (!isset($_POST['hideTheaterNameCb'])){
+      $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . ", t.Name as Theater";
+    }
+    if (!isset($_POST['hideLocationCb'])){
+      $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . ", a.Location";
+    }
+    if (!isset($_POST['hideNameCb'])){
+      $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . ", a.Name";
+    }
+    if (!isset($_POST['hideSeatsCb'])){
+      $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . ", a.SeatsLeft as Seats";
+    }
+    if (isset($_POST['searchTickets'])) {
+      $_SESSION['sqlRequest'] =  $_SESSION['sqlRequest'] . " FROM arrange as a, theater as t, ticket as ti WHERE a.Location = t.Location and ti.ArrangeId = a.ArrangeId and ti.CEmail LIKE '" . $_SESSION['username'] . "' and 1 ";
+    } else {
+       $_SESSION['sqlRequest'] =  $_SESSION['sqlRequest'] . " FROM arrange as a, theater as t WHERE a.Location = t.Location and 1 ";
+    }
+  
   // date filter
   if (isset($_POST['fromDateCb']) and !isset($_POST['toDateCb'])){
      $_SESSION['sqlRequest'] =  $_SESSION['sqlRequest'] . " AND Showtime = '" .  date('Y-m-d H:i:s', strtotime($_POST['fromDate'])) . "'";
@@ -115,14 +134,20 @@ Query is <?= $_SESSION['sqlRequest']?> <br>
 
     
     <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">  
-                  <input type="checkbox" name="movieNameCb"  checked=true value="Yes" /> Movie Title: <input type = "text" name = "movieName"><br />
-                  <input type="checkbox" name="fromDateCb" value="Yes" /> (from/on) Date: <input type = "datetime-local" name = "fromDate" value="2017-03-03T00:00"> <br />
-                  <input type="checkbox" name="toDateCb" value="Yes" /> (to) Date: <input type = "datetime-local" name = "toDate"> <br />
-                  <input type="checkbox" name="locationNameCb" value="Yes" /> Theatre Location: <input type = "text" name = "locationName"><br />
-                  <input type="checkbox" name="theaterNameCb" value="Yes" /> Theatre Name: <input type = "text" name = "theaterName"><br />
-                  <input type="checkbox" name="showIdCb" value="Yes" /> Show ID: <input type = "number" name = "showId"><br />
-                  <input type="checkbox" name="searchTickets" value="Yes" /> Search tickets instead? <br />
-                  <input type = "submit" value = " Submit "/><br /> <input type='button' value='Buy ticket(s) for select show' onclick='fnselect()' />
+        <input type="checkbox" name="movieNameCb"  checked=true value="Yes" /> Movie Title: <input type = "text" name = "movieName"><br />
+        <input type="checkbox" name="fromDateCb" value="Yes" /> (from/on) Date: <input type = "datetime-local" name = "fromDate" value="2017-03-03T00:00"> <br />
+        <input type="checkbox" name="toDateCb" value="Yes" /> (to) Date: <input type = "datetime-local" name = "toDate"> <br />
+        <input type="checkbox" name="locationNameCb" value="Yes" /> Theatre Location: <input type = "text" name = "locationName"><br />
+        <input type="checkbox" name="theaterNameCb" value="Yes" /> Theatre Name: <input type = "text" name = "theaterName"><br />
+        <input type="checkbox" name="showIdCb" value="Yes" /> Show ID: <input type = "number" name = "showId"><br />
+        <input type="checkbox" name="searchTickets" value="Yes" /> Search tickets instead? <br />
+        <input type = "submit" value = " Submit "/> 
+        <input type="checkbox" name="hideShowtimeCb" value="Yes" /> Hide Showtime?
+        <input type="checkbox" name="hideTheaterNameCb" value="Yes" /> Hide TheaterName?
+        <input type="checkbox" name="hideLocationCb" value="Yes" /> Hide Location?
+        <input type="checkbox" name="hideNameCb" value="Yes" /> Hide Name?
+        <input type="checkbox" name="hideSeatsCb" value="Yes" /> Hide Seats? <br /> 
+        <input type='button' value='Buy ticket(s) for select show' onclick='fnselect(document.getElementsByName("numberOfTickets")[0].value)' /> # of ticket: <input type = "number" min="0" defaultValue=1 placeholder=1 name = "numberOfTickets"><br />
     </form>
 
     More search filters: <br/>
@@ -186,11 +211,11 @@ Query is <?= $_SESSION['sqlRequest']?> <br>
     selected = table.getElementsByClassName('selected');
     table.onclick = highlight;
 
-    function fnselect(){
+    function fnselect($tickets){
         if ($("tr.selected td:first" ).html() == null){
           alert("You must select a show!");
         }else{
-          window.location.replace('main.php?buyTicket=' + $("tr.selected td:first" ).html());
+          window.location.replace('main.php?buyTicket=' + $("tr.selected td:first" ).html() + '&tickets=' + Math.abs($tickets));
         }
         
     }
