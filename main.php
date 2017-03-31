@@ -276,7 +276,7 @@ if (isset($_POST['statsOperation'])) {
           </div>
         </div>
         <div class="col-md-1">
-          <input type="checkbox" name="movieNameCb" class="to-labelauty-icon" value="Yes" checked=true/>
+          <input type="checkbox" name="movieNameCb" class="to-labelauty-icon" value="Yes"/>
         </div>
 
         <!--Second column-->
