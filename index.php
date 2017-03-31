@@ -42,28 +42,17 @@
    </head>
    
    <body>
-
-
-
-
         <!-- added styled-->
 
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="pr-wrap">
-                        <div class="pass-reset">
-                            <label>
-                                Enter the email you signed up with</label>
-                            <input type="email" placeholder="Email"/>
-                            <input type="submit" value="Submit" class="pass-reset-submit btn btn-success btn-sm" />
-                        </div>
-                    </div>
+                    
                     <div class="wrap">
                         <p class="form-title">
                             Sign In</p>
                         <form class="login" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-                        <input type="text" placeholder="Username"  name = "email"/>
+                        <input type="text" placeholder="Email"  name = "email"/>
                         <input type="password" placeholder="Password" name = "password"/>
                         <input type="submit" value="submit" class="btn btn-success btn-sm" />
                         <div class="remember-forgot">

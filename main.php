@@ -177,28 +177,6 @@ if (isset($_POST['statsOperation'])) {
      $('#mainTable').DataTable();
    });
 
-    function checkcheck(){
-
-
-      var temp3 = document.getElementsByName("toDate").value;
-      if(temp3 != 'undefined'){
-        document.getElementsByName("toDateCb").checked(true);
-      }
-      alert("temp6");
-      var temp4 = document.getElementsByName("locationName").value;
-      if(temp4 != 'undefined'){
-        document.getElementsByName("locationNameCb").checked(true);
-      }
-      var temp5 = document.getElementsByName("theaterName").value;
-      if(temp5 != 'undefined'){
-        document.getElementsByName("theaterNameCb").checked(true);
-      }
-      var temp6 = document.getElementsById("showId").value;
-      if(temp6 != 'undefined'){
-        document.getElementsByName("showIdCb").value = "Yes";
-      }
-
-    }
   </script>
 
   <link rel="stylesheet" href="bower_components/jquery-labelauty/source/jquery-labelauty.css" type="text/css"  media="screen" charset="utf-8">
@@ -340,7 +318,7 @@ if (isset($_POST['statsOperation'])) {
         <div class="col-md-2"></div>
         <div class="col-md-3">
           <div class="md-form">
-            <input type = "submit" class="myButton" value = " Submit " onclick="checkcheck();"/>
+            <input type = "submit" class="myButton" value = " Submit "/>
           </div>
         </div>
         <div class="col-md-3">

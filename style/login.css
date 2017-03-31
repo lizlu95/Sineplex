@@ -35,7 +35,8 @@ form
     margin: 0 auto;
 }
 
-form.login input[type="text"], form.login input[type="password"]
+form.login input[type="text"], 
+form.login input[type="password"]
 {
     width: 100%;
     margin: 0;
