@@ -128,12 +128,7 @@ if (isset($_POST['statsOperation'])) {
       color: #fff;
     }
   </style>
-
-  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   <link rel="stylesheet" href="https://cdn.datatables.net/1.10.13/css/dataTables.bootstrap.min.css">
-  <script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
-  <script src="https://cdn.datatables.net/1.10.13/js/dataTables.bootstrap.min.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.0/css/font-awesome.min.css">
@@ -143,46 +138,12 @@ if (isset($_POST['statsOperation'])) {
 
   <!-- Material Design Bootstrap -->
   <link href="css/mdb.min.css" rel="stylesheet">
-  <script src="jquery.iMissYou.js"></script>
-  <script src="js/jquery-ui-timepicker-addon.js"></script>
-
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
-  <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
-
-  <script type="text/javascript" src="https://storage.googleapis.com/code.getmdl.io/1.3.0/material.min.js"></script>
-
   <link rel="stylesheet" type="text/css" href="https://storage.googleapis.com/code.getmdl.io/1.3.0/material.indigo-pink.min.css">
-  
-  <script type="text/javascript" src="https://rawgit.com/MEYVN-digital/mdl-selectfield/master/mdl-selectfield.min.js"></script>
-
   <link rel="stylesheet" type="text/css" href="https://rawgit.com/MEYVN-digital/mdl-selectfield/master/mdl-selectfield.min.css">
-
-  <script>
-    jQuery(document).ready(function($){
-      $.iMissYou({
-        title: "I Miss you !",
-        favicon: {
-          enabled: true,
-          src:'iMissYouFavicon.ico'
-        }
-      });
-    });
-    jQuery(document).ready(function($){
-     $(".lcheckbox").labelauty();
-     $(".to-labelauty-icon").labelauty({ label: false });
-     $( ".fromdatepicker" ).datepicker();
-     $( ".todatepicker" ).datepicker();
-     $(".datepicker").datetimepicker();
-     $('#mainTable').DataTable();
-   });
-
-  </script>
-
   <link rel="stylesheet" href="bower_components/jquery-labelauty/source/jquery-labelauty.css" type="text/css"  media="screen" charset="utf-8">
-  <script type="text/javascript" src="bower_components/jquery-labelauty/source/jquery-labelauty.js"></script>
-
-
+ 
   <title>Sineplex</title>
 </head>
 <body>
@@ -432,7 +393,6 @@ if (isset($_POST['statsOperation'])) {
   }
 
 </script>
-
 <!-- SCRIPTS -->
 <!-- JQuery -->
 <script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>
@@ -442,5 +402,28 @@ if (isset($_POST['statsOperation'])) {
 <script type="text/javascript" src="js/bootstrap.min.js"></script>
 <!-- MDB core JavaScript -->
 <script type="text/javascript" src="js/mdb.min.js"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.13/js/dataTables.bootstrap.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script src="jquery.iMissYou.js"></script>
+<script src="js/jquery-ui-timepicker-addon.js"></script>
+<script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+<script type="text/javascript" src="https://storage.googleapis.com/code.getmdl.io/1.3.0/material.min.js"></script>
+<script type="text/javascript" src="https://rawgit.com/MEYVN-digital/mdl-selectfield/master/mdl-selectfield.min.js"></script>
+<script>
+  jQuery(document).ready(function($){
+    $.iMissYou({
+      title: "I Miss you !"
+    });
+  });
+  jQuery(document).ready(function($){
+   $(".lcheckbox").labelauty();
+   $(".to-labelauty-icon").labelauty({ label: false });
+   $(".datepicker").datetimepicker();
+   $('#mainTable').DataTable();
+ });
+</script>
+<script type="text/javascript" src="bower_components/jquery-labelauty/source/jquery-labelauty.js"></script>
 </body>
 </html>

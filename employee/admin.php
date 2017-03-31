@@ -133,112 +133,271 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 ?>
 <html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <style type="text/css">
-            tr
-            {
-                border: 1px #DDD solid;
-                padding: 5px;
-                cursor: pointer;
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <link href="../style/main.css" rel="stylesheet">
+  <style>
+    .demo-card-wide.mdl-card{
+      width: 87%;
+      opacity:0.7;
+    }
+    .demo-card-wide > .mdl-card__title {
+      color: #fff;
+      height: 120px;
+      background: url('../img/welcome.jpg') center / cover;
+    }
+    .demo-card-wide > .mdl-card__menu {
+      color: #fff;
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.13/css/dataTables.bootstrap.min.css">
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.0/css/font-awesome.min.css">
+  <!-- Bootstrap core CSS -->
+  <link href="../css/bootstrap.min.css" rel="stylesheet">
+  <link href="../css/jquery-ui-timepicker-addon.css" rel="stylesheet">
 
-            }
-            .selected
-            {
-                background-color: #000080;
-                color: #FFF;
-            }
-        </style>
-        <title></title>
-    </head>
-    <body>
+  <!-- Material Design Bootstrap -->
+  <link href="../css/mdb.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+  <link rel="stylesheet" type="text/css" href="https://storage.googleapis.com/code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+  <link rel="stylesheet" type="text/css" href="https://rawgit.com/MEYVN-digital/mdl-selectfield/master/mdl-selectfield.min.css">
+  <link rel="stylesheet" href="../bower_components/jquery-labelauty/source/jquery-labelauty.css" type="text/css"  media="screen" charset="utf-8">
 
-List Query is <?= $_SESSION['sqlRequest']?> <br>
-Hello <?= $_SESSION['employeeId']?> <br>
+  <title>Admin</title>
+</head>
+<body>
+  <div class="content">
+      <div class="white-card demo-card-wide mdl-card"></div>
+  </div><!--end of content-->
+  <br><br>
 
-    Delete Operations: <br>
-    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">  
-                  <input type="radio" name="delOperation" checked=true value="delUser" /> Delete User: <input type = "text" name="delUser"> <br />
-                  <input type="radio" name="delOperation" value="deleteMovie" /> Delete Movie: <input type = "text" name = "delMovie"> <br />
-                  <input type="radio" name="delOperation" value="deleteArranges" /> Delete Show <input type = "number" name = "delArrange"><br />
-                  <input type="radio" name="delOperation" value="deleteTheatre" /> Delete Theatre <input type = "text" name = "delTheatre"><br />
-                  <input type="radio" name="delOperation" value="deleteTicket" /> Delete Ticket <input type = "text" name = "delTicket"><br />
-                  <input type = "submit" value = " Submit "/><br /> 
+<!-- welcome msg, current query, and log out -->
+  <div class="container" align="middle">
+    <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+      <div class="mdl-card__title">
+        <h2 class="mdl-card__title-text">Welcome <?= $_SESSION['employeeId']?></h2>
+      </div>
+      <div class="mdl-card__supporting-text">
+        List Query is <?= $_SESSION['sqlRequest']?>
+      </div>
+      <div class="mdl-card__actions mdl-card--border">
+        <a href="logout.php" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+        Log out</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <h2>Delete Operations</h2> <br>
+    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+      <div class="row">
+
+        <div class="col-md-1"><input class="to-labelauty-icon" type="radio" name="delOperation" value="delUser"/></div>
+        <div class="col-md-3"><div class="md-form">
+        <input type = "text" id="form76" class="form-control validate md-textarea" name="delUser">
+        <label for="form76" data-error="wrong" data-success="right">Delete User</label>
+        </div></div>
+
+        <div class="col-md-1"><input class="to-labelauty-icon" type="radio" name="delOperation" value="delMovie"/></div>
+        <div class="col-md-3"><div class="md-form">
+        <input type = "text" id="form76" class="form-control validate md-textarea" name="delMovie">
+        <label for="form76" data-error="wrong" data-success="right">Delete Movie</label>
+        </div></div>
+
+        <div class="col-md-1"><input class="to-labelauty-icon" type="radio" name="delOperation" value="delArrange"/></div>
+        <div class="col-md-3"><div class="md-form">
+        <input type = "text" id="form76" class="form-control validate md-textarea" name="delArrange">
+        <label for="form76" data-error="wrong" data-success="right">Delete Arrange</label>
+        </div></div>
+      </div>
+      <div class="row">
+
+        <div class="col-md-1"><input class="to-labelauty-icon" type="radio" name="delOperation" value="delTheatre"/></div>
+        <div class="col-md-3"><div class="md-form">
+        <input type = "text" id="form76" class="form-control validate md-textarea" name="delTheatre">
+        <label for="form76" data-error="wrong" data-success="right">Delete Theatre</label>
+        </div></div>
+
+        <div class="col-md-1"><input class="to-labelauty-icon" type="radio" name="delOperation" value="delTicket"/></div>
+        <div class="col-md-3"><div class="md-form">
+        <input type = "text" id="form76" class="form-control validate md-textarea" name="delTicket">
+        <label for="form76" data-error="wrong" data-success="right">Delete Ticket</label>
+        </div></div>
+      </div>
+      <div class="row">
+      <div class="col-md-4"></div>
+      <div class="col-md-4"><input class="myButton" type = "submit" value = " Submit "/></div>
+      <div class="col-md-4"></div>
+      </div>
     </form>
+  </div>
 
-    List Operations: <br>
-    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">  
-                  <input type="radio" name="listOperation" checked=true value="listArranges" /> List Arranges <br>
-                  <input type="radio" name="listOperation" checked=false value="listCustomers" /> List Customers <br>
-                  <input type="radio" name="listOperation" checked=false value="listTheaters" /> List Theaters <br>
-                  <input type="radio" name="listOperation" checked=false value="listTickets" /> List Tickets <br>
-                  <input type="radio" name="listOperation" checked=false value="listMovies" /> List Movies <br>
-                  <input type = "submit" value = " Submit "/><br /> 
+  <div class="container">
+    <h2>List Operations</h2> <br>
+    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+      <div class="row">
+        <div class="col-md-1"><input class="to-labelauty-icon" type="radio" name="listOperation" value="listArranges"/></div>
+        <div class="col-md-3"><p><b>Arranges</b></p></div>
+        <div class="col-md-1"><input class="to-labelauty-icon" type="radio" name="listOperation" value="listCustomers"/></div>
+        <div class="col-md-3"><p><b>Customers</b></p></div>
+        <div class="col-md-1"><input class="to-labelauty-icon" type="radio" name="listOperation" value="listTheaters"/></div>
+        <div class="col-md-3"><p><b>Theatres</b></p></div>
+      </div>
+      <div class="row">
+        <div class="col-md-1"><input class="to-labelauty-icon" type="radio" name="listOperation" value="listTickets"/></div>
+        <div class="col-md-3"><p><b>Tickets</b></p></div>
+        <div class="col-md-1"><input class="to-labelauty-icon" type="radio" name="listOperation" value="listMovies"/></div>
+        <div class="col-md-3"><p><b>Movies</b></p></div>
+      </div>
+      <br>
+      <div class="row">
+      <div class="col-md-4"></div>
+      <div class="col-md-4"><input class="myButton" type = "submit" value = " Submit "/></div>
+      <div class="col-md-4"></div></div>
     </form>
+  </div>
 
-    Stats Operations: <br>
-    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">  
-                  <input type="radio" name="statsOperation" checked=true value="statsSeatsLeft" /> View 
-                    <select name="statsSeatsLeftOp">
-                        <option value="min">min</option>
-                        <option value="max">max</option>
-                        <option value="count">count</option>
-                        <option value="sum">sum</option>
-                        <option value="avg">avg</option>
-                    </select>
-                    of Seats ordered by
-                    <select name="statsSeatsLeftOrder">
-                        <option value="movie">Movie Name</option>
-                        <option value="seats">Seats Left</option>
-                    </select>
+  <div class="container">
+    <h2>Stats Operations</h2> <br>
+    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+      <div class="row">
+        <div class="col-md-1">
+          <input class="to-labelauty-icon" type="radio" name="statsOperation" value="statsSeatsLeft"/> 
+        </div>
+        <div class="col-md-5">
+          <b>View
+          <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label" style="width:70px">
+           <select name="statsSeatsLeftOp" class="mdl-selectfield__select">
+            <option value="min">MIN</option>
+            <option value="max">MAX</option>
+            <option value="count">COUNT</option>
+            <option value="sum">SUM</option>
+            <option value="avg">AVG</option>
+           </select></div>
+           of Seats ordered by
+           <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label" style="width:110px">
+           <select name="statsSeatsLeftOrder" class="mdl-selectfield__select">
+            <option value="movie">Movie Name</option>
+            <option value="seats">Seats Left</option>
+           </select></div>
+           <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label" style="width:90px">
+           <select name="statsSeatsLeftOrderBy" class="mdl-selectfield__select">
+            <option value="desc">DESC</option>
+            <option value="asc">ASCE</option>
+           </select></div></b>
+        </div>
 
-                    <select name="statsSeatsLeftOrderBy">
-                        <option value="desc">DESC</option>
-                        <option value="asc">ASCE</option>
-                    </select><br />
-                    <input type="radio" name="statsOperation" value="statsAvgSeats" /> List Arranges with number of seats 
-                    <select name="statsAvgSeatsOp">
-                        <option value="greater">GREATER</option>
-                        <option value="less">LESS</option>
-                    </select>
-                    than or equal to average
-                    <br />
-                    <input type="radio" name="statsOperation" value="statsSeatsPerTheater" /> List the
-                    <select name="statsSeatsPerTheaterMinMax">
-                        <option value="min">MIN</option>
-                        <option value="max">MAX</option>
-                    </select>
-                    of the averages of seats left for all arranges, by theater.
-                    <br />
-                    <input type="radio" name="statsOperation" value="statsSpecificMovie" /> List all users that bought this movie:  
-                    <input type = "text" placeHolder="Exact Movie Name" name = "statsSpecificMovieName">
-                    <br />
-                  <input type = "submit" value = " Submit "/><br /> 
+        <div class="col-md-1">
+          <input class="to-labelauty-icon" type="radio" name="statsOperation" value="statsAvgSeats"/> 
+        </div>
+        <div class="col-md-5">
+          <b>List Arranges with number of seats
+          <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label" style="width:90px">
+           <select name="statsAvgSeatsOp" class="mdl-selectfield__select">
+            <option value="greater">GREATER</option>
+            <option value="less">LESS</option>
+           </select>
+          </div>
+          than or equal to average</b>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-1">
+          <input class="to-labelauty-icon" type="radio" name="statsOperation" value="statsSeatsPerTheater"/> 
+        </div>
+        <div class="col-md-5">
+          <b>List the 
+          <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label" style="width:70px">
+           <select name="statsSeatsPerTheaterMinMax" class="mdl-selectfield__select">
+            <option value="min">MIN</option>
+            <option value="max">MAX</option>
+           </select>
+          </div></b>
+          <p><b>of the averages of seats left for all arranges, by theater.</b></p>
+        </div>
+
+        <div class="col-md-1">
+          <input class="to-labelauty-icon" type="radio" name="statsOperation" value="statsSpecificMovie"/>
+        </div>
+        <div class="col-md-5"><div class="md-form">
+          <p><b>List all users that bought this movie: </b></p>
+          <input type = "text" id="form76" class="form-control validate md-textarea" name = "statsSpecificMovieName">
+          <label for="form76" data-error="wrong" data-success="right">Movie Title</label>
+          of the averages of seats left for all arranges, by theater</b></p>
+        </div></div>
+      </div>
+      <div class="row">
+      <div class="col-md-4"></div>
+      <div class="col-md-4"><input class="myButton" type = "submit" value = " Submit "/></div>
+      <div class="col-md-4"></div></div>
     </form>
+  </div>
 
-    Insert Operations: <br>
-    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">  
-                  <input type="radio" name="insertOperation" checked=true  value="insertMovie" /> Insert a movie:<br/>
-                        <input type = "test" placeholder="Movie Name" name="movieName">
-                        <input type = "text" placeholder="Advisory Rating" name="movieRating">
-                        <input type = "number" placeholder="Duration in min" name="movieDuration">
-                        <input type = "date" placeholder="Starting Date" name="movieDate">
-                        <input type = "number" placeholder="Price (no symbols)" name="moviePrice">
-                  <br/>
-                  <input type="radio" name="insertOperation" value="insertArranges" /> Insert an Arrange:<br/>
-                        <input type = "datetime-local" name="arrangeShowTime">
-                        <input type = "text" placeholder="Theater Location" name="arrangeLocation">
-                        <input type = "text" placeholder="Movie Name" name="arrangeMovie">
-                        <input type = "number" placeholder="Seats" name="arrangeSeats">
-                  <br/>
 
-                  <input type = "submit" value = " Submit "/><br /> 
+<div class="container">
+    <h2>Insert Operations</h2> <br>
+    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+      <div class="row">
+
+        <div class="col-md-2"><input class="to-labelauty-icon" type="radio" name="insertOperation" value="insertMovie"/><b>Insert a movie</b></div>
+
+        <div class="col-md-2"><div class="md-form">
+        <input type = "text" id="form76" class="form-control validate md-textarea" name="movieName">
+        <label for="form76" data-error="wrong" data-success="right">Movie</label>
+        </div></div>
+
+        <div class="col-md-2"><div class="md-form">
+        <input type = "text" id="form76" class="form-control validate md-textarea" name="movieRating">
+        <label for="form76" data-error="wrong" data-success="right">Rating</label>
+        </div></div>
+
+        <div class="col-md-2"><div class="md-form">
+        <input type = "number" id="form76" class="form-control validate md-textarea" name="movieDuration">
+        <label for="form76" data-error="wrong" data-success="right">Duration</label>
+        </div></div>
+
+        <div class="col-md-2"><div class="md-form">
+        <input type = "number" id="form76" class="form-control validate md-textarea" name="moviePrice">
+        <label for="form76" data-error="wrong" data-success="right">Price</label>
+        </div></div>
+
+        <div class="col-md-2"><div class="md-form">
+        <input type = "date" class="datepicker" name="movieDate">
+        </div></div>
+      </div>
+      <div class="row">
+        <div class="col-md-2">
+        <input type="radio" class="to-labelauty-icon" name="insertOperation" value="insertArranges" /><b>Insert an Arrange</b></div>
+
+        <div class="col-md-2"><div class="md-form">
+        <input type = "text" id="form76" class="form-control validate md-textarea" name="arrangeMovie">
+        <label for="form76" data-error="wrong" data-success="right">Movie</label>
+        </div></div>
+
+        <div class="col-md-2"><div class="md-form">
+        <input type = "text" id="form76" class="form-control validate md-textarea" name="arrangeSeats">
+        <label for="form76" data-error="wrong" data-success="right">Seat number</label>
+        </div></div>
+
+        <div class="col-md-2"><div class="md-form">
+        <input type = "datetime-local"  class="datepicker" name="arrangeShowTime">
+        </div></div>
+
+        </div>
+      <div class="row">
+      <div class="col-md-4"></div>
+      <div class="col-md-4"><input class="myButton" type = "submit" value = " Submit "/></div>
+      <div class="col-md-4"></div></div>
     </form>
-<a href="logout.php">Logout</a>
-<br><br>
+  </div>
 
-    <table id="mainTable">
-        <tr >
+<div class="container">
+    <table id="mainTable" class="table table-bordered">
+        <tr>
         <?php
           $sql = $_SESSION['sqlRequest'];
           $query = mysqli_query($db,$sql);
@@ -265,6 +424,7 @@ Hello <?= $_SESSION['employeeId']?> <br>
 
         ?>
     </table>
+</div>
     <br><br>
     <script>
     function highlight(e) {
@@ -282,8 +442,30 @@ Hello <?= $_SESSION['employeeId']?> <br>
         }else{
           alert($("tr.selected td:first" ).html());
         }
-        
     }
 </script>
-    </body>
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.10.13/js/dataTables.bootstrap.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script src="../jquery.iMissYou.js"></script>
+  <script src="../js/jquery-ui-timepicker-addon.js"></script>
+  <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+  <script type="text/javascript" src="https://storage.googleapis.com/code.getmdl.io/1.3.0/material.min.js"></script>
+  <script type="text/javascript" src="https://rawgit.com/MEYVN-digital/mdl-selectfield/master/mdl-selectfield.min.js"></script>
+  <script>
+    jQuery(document).ready(function($){
+      $.iMissYou({
+        title: "I Miss you !"
+      });
+    });
+    jQuery(document).ready(function($){
+     $(".lcheckbox").labelauty();
+     $(".to-labelauty-icon").labelauty({ label: false });
+     $(".datepicker").datetimepicker();
+     $('#mainTable').DataTable();
+   });
+  </script>
+  <script type="text/javascript" src="../bower_components/jquery-labelauty/source/jquery-labelauty.js"></script>
+</body>
 </html>
