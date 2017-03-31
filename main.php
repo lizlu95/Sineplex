@@ -2,11 +2,11 @@
 session_start();
 include("database.php");
 if (!isset($_SESSION['username'])) {
-    header("location:index.php");
+  header("location:index.php");
 }
 
 if (!isset($_SESSION['sqlRequest'])){
-    $_SESSION['sqlRequest'] = "SELECT a.ArrangeId as ShowID, a.Showtime, t.Name as TheaterName, a.Location, a.Name, a.SeatsLeft as Seats FROM arrange as a, theater as t WHERE a.Location = t.Location;";
+  $_SESSION['sqlRequest'] = "SELECT a.ArrangeId as ShowID, a.Showtime, t.Name as TheaterName, a.Location, a.Name, a.SeatsLeft as Seats FROM arrange as a, theater as t WHERE a.Location = t.Location;";
 }
 // buying ticket
 if ($_SERVER["REQUEST_METHOD"] == "GET"){
@@ -36,189 +36,430 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   // assume this post came from this page and not some external source...
   // begin constructing sql statement for movie filtering
   // build selection/proj query
-    $_SESSION['sqlRequest'] = "SELECT a.ArrangeId as ShowID";
-    if (!isset($_POST['hideShowtimeCb'])){
-      $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . ", a.Showtime";
-    }
-    if (!isset($_POST['hideTheaterNameCb'])){
-      $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . ", t.Name as Theater";
-    }
-    if (!isset($_POST['hideLocationCb'])){
-      $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . ", a.Location";
-    }
-    if (!isset($_POST['hideNameCb'])){
-      $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . ", a.Name";
-    }
-    if (!isset($_POST['hideSeatsCb'])){
-      $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . ", a.SeatsLeft as Seats";
-    }
-    if (isset($_POST['searchTickets'])) {
-      $_SESSION['sqlRequest'] =  $_SESSION['sqlRequest'] . " FROM arrange as a, theater as t, ticket as ti WHERE a.Location = t.Location and ti.ArrangeId = a.ArrangeId and ti.CEmail LIKE '" . $_SESSION['username'] . "' and 1 ";
-    } else {
-       $_SESSION['sqlRequest'] =  $_SESSION['sqlRequest'] . " FROM arrange as a, theater as t WHERE a.Location = t.Location and 1 ";
-    }
-  
+  $_SESSION['sqlRequest'] = "SELECT a.ArrangeId as ShowID";
+  if (!isset($_POST['hideShowtimeCb'])){
+    $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . ", a.Showtime";
+  }
+  if (!isset($_POST['hideTheaterNameCb'])){
+    $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . ", t.Name as Theater";
+  }
+  if (!isset($_POST['hideLocationCb'])){
+    $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . ", a.Location";
+  }
+  if (!isset($_POST['hideNameCb'])){
+    $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . ", a.Name";
+  }
+  if (!isset($_POST['hideSeatsCb'])){
+    $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . ", a.SeatsLeft as Seats";
+  }
+  if (isset($_POST['searchTickets'])) {
+    $_SESSION['sqlRequest'] =  $_SESSION['sqlRequest'] . " FROM arrange as a, theater as t, ticket as ti WHERE a.Location = t.Location and ti.ArrangeId = a.ArrangeId and ti.CEmail LIKE '" . $_SESSION['username'] . "' and 1 ";
+  } else {
+   $_SESSION['sqlRequest'] =  $_SESSION['sqlRequest'] . " FROM arrange as a, theater as t WHERE a.Location = t.Location and 1 ";
+ }
+
   // date filter
-  if (isset($_POST['fromDateCb']) and !isset($_POST['toDateCb'])){
-     $_SESSION['sqlRequest'] =  $_SESSION['sqlRequest'] . " AND Showtime = '" .  date('Y-m-d H:i:s', strtotime($_POST['fromDate'])) . "'";
-  } 
-  elseif (isset($_POST['fromDateCb']) and isset($_POST['toDateCb'])){
-     $_SESSION['sqlRequest'] =  $_SESSION['sqlRequest'] . " AND Showtime >= '" .  date('Y-m-d H:i:s', strtotime($_POST['fromDate'])) . "' AND Showtime <= '" .  date('Y-m-d H:i:s', strtotime($_POST['toDate'])) . "'";
-  } 
+ if (isset($_POST['fromDateCb']) and !isset($_POST['toDateCb'])){
+   $_SESSION['sqlRequest'] =  $_SESSION['sqlRequest'] . " AND Showtime = '" .  date('Y-m-d H:i:s', strtotime($_POST['fromDate'])) . "'";
+ } 
+ elseif (isset($_POST['fromDateCb']) and isset($_POST['toDateCb'])){
+   $_SESSION['sqlRequest'] =  $_SESSION['sqlRequest'] . " AND Showtime >= '" .  date('Y-m-d H:i:s', strtotime($_POST['fromDate'])) . "' AND Showtime <= '" .  date('Y-m-d H:i:s', strtotime($_POST['toDate'])) . "'";
+ } 
 
   //movie name
-  if (isset($_POST["movieNameCb"])){
-    $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . " AND a.Name LIKE '%" . $_POST['movieName'] . "%'";
-  }
+ if (isset($_POST["movieNameCb"])){
+  $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . " AND a.Name LIKE '%" . $_POST['movieName'] . "%'";
+}
 
   //theater location
-  if (isset($_POST["locationNameCb"])){
-    $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . " AND a.Location LIKE '%" . $_POST['locationName'] . "%'";
-  }
+if (isset($_POST["locationNameCb"])){
+  $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . " AND a.Location LIKE '%" . $_POST['locationName'] . "%'";
+}
 
   //theater name
-  if (isset($_POST["theaterNameCb"])){
-    $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . " AND t.Name LIKE '%" . $_POST['theaterName'] . "%'";
-  }
+if (isset($_POST["theaterNameCb"])){
+  $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . " AND t.Name LIKE '%" . $_POST['theaterName'] . "%'";
+}
 
   //arrangeid name
-  if (isset($_POST["showIdCb"])){
-    $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . " AND a.ArrangeId = " . $_POST['showId'];
-  }
+if (isset($_POST["showIdCb"])){
+  $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . " AND a.ArrangeId = " . $_POST['showId'];
+}
   // end queries
-  $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . " and 1;";
-  if (isset($_POST['statsOperation'])) {
-    if($_POST['statsOperation'] == "statsAvgSeats"){
-        $_SESSION['sqlRequest'] = "SELECT a.ArrangeId as ShowID, t.Name as Theater, a.Name, a.SeatsLeft as Seats from arrange as a inner join theater as t on a.Location = t.Location where SeatsLeft ";
-        if ($_POST['statsAvgSeatsOp'] == "greater"){
-          $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . ">";
-        }else
-          $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . "<";
-        $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . "= (SELECT avg(SeatsLeft) from arrange);";
-    } elseif($_POST['statsOperation'] == "statsAvgDuration"){
+$_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . " and 1;";
+if (isset($_POST['statsOperation'])) {
+  if($_POST['statsOperation'] == "statsAvgSeats"){
+    $_SESSION['sqlRequest'] = "SELECT a.ArrangeId as ShowID, t.Name as Theater, a.Name, a.SeatsLeft as Seats from arrange as a inner join theater as t on a.Location = t.Location where SeatsLeft ";
+    if ($_POST['statsAvgSeatsOp'] == "greater"){
+      $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . ">";
+    }else
+    $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . "<";
+    $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . "= (SELECT avg(SeatsLeft) from arrange);";
+  } elseif($_POST['statsOperation'] == "statsAvgDuration"){
 
-        $_SESSION['sqlRequest'] = "SELECT m.Name, m.Duration, t.avg as Average from movie as m, (SELECT AVG(Duration) as avg from movie) as t where Duration ";
-        if ($_POST['statsAvgDurationOp'] == "greater"){
-          $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . ">";
-        }else
-          $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . "<";
-        $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . "= (SELECT avg(Duration) as avg from movie);";
-      }
+    $_SESSION['sqlRequest'] = "SELECT m.Name, m.Duration, t.avg as Average from movie as m, (SELECT AVG(Duration) as avg from movie) as t where Duration ";
+    if ($_POST['statsAvgDurationOp'] == "greater"){
+      $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . ">";
+    }else
+    $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . "<";
+    $_SESSION['sqlRequest'] = $_SESSION['sqlRequest'] . "= (SELECT avg(Duration) as avg from movie);";
   }
+}
 }
 ?>
 <html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js" type="text/javascript"></script>
-        <style type="text/css">
-            tr
-            {
-                border: 1px #DDD solid;
-                padding: 5px;
-                cursor: pointer;
-
-            }
-            .selected
-            {
-                background-color: #000080;
-                color: #FFF;
-            }
-        </style>
-        <title></title>
-    </head>
-    <body>
-
-Hello <?= $_SESSION['username']?> <br>
-Query is <?= $_SESSION['sqlRequest']?> <br>
-
-    
-    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">  
-        <input type="checkbox" name="movieNameCb"  checked=true value="Yes" /> Movie Title: <input type = "text" name = "movieName"><br />
-        <input type="checkbox" name="fromDateCb" value="Yes" /> (from/on) Date: <input type = "datetime-local" name = "fromDate" value="2017-03-03T00:00"> <br />
-        <input type="checkbox" name="toDateCb" value="Yes" /> (to) Date: <input type = "datetime-local" name = "toDate"> <br />
-        <input type="checkbox" name="locationNameCb" value="Yes" /> Theatre Location: <input type = "text" name = "locationName"><br />
-        <input type="checkbox" name="theaterNameCb" value="Yes" /> Theatre Name: <input type = "text" name = "theaterName"><br />
-        <input type="checkbox" name="showIdCb" value="Yes" /> Show ID: <input type = "number" name = "showId"><br />
-        <input type="checkbox" name="searchTickets" value="Yes" /> Search tickets instead? <br />
-        <input type = "submit" value = " Submit "/> 
-        <input type="checkbox" name="hideShowtimeCb" value="Yes" /> Hide Showtime?
-        <input type="checkbox" name="hideTheaterNameCb" value="Yes" /> Hide TheaterName?
-        <input type="checkbox" name="hideLocationCb" value="Yes" /> Hide Location?
-        <input type="checkbox" name="hideNameCb" value="Yes" /> Hide Name?
-        <input type="checkbox" name="hideSeatsCb" value="Yes" /> Hide Seats? <br /> 
-        <input type='button' value='Buy ticket(s) for select show' onclick='fnselect(document.getElementsByName("numberOfTickets")[0].value)' /> # of ticket: <input type = "number" min="0" defaultValue=1 placeholder=1 name = "numberOfTickets"><br />
-    </form>
-
-    More search filters: <br/>
-    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">  
-                    <input type="radio" name="statsOperation" value="statsAvgSeats" /> List Arranges with number of seats 
-                         <select name="statsAvgSeatsOp">
-                          <option value="greater">GREATER</option>
-                          <option value="less">LESS</option>
-                         </select>
-                    than or equal to average
-                    <br />
-                    <input type="radio" name="statsOperation" value="statsAvgDuration" /> List Movies with duration 
-                         <select name="statsAvgDurationOp">
-                            <option value="greater">GREATER</option>
-                            <option value="less">LESS</option>
-                         </select>
-                    than or equal to average duration
-                    <br />
-                  <input type = "submit" value = " Submit "/><br /> 
-    </form>
-
-<a href="logout.php">Logout</a>
-<br><br>
-
-    <table id="mainTable">
-        <tr >
-        <?php
-          $sql = $_SESSION['sqlRequest'];
-          $query = mysqli_query($db,$sql);
-          $row = mysqli_fetch_array($query);
-          if (sizeof($row) > 0){
-            $the_keys = array_keys($row);
-            for ($i=1; $i <sizeof($the_keys)+1; $i+=2){
-              echo "<td><b>".$the_keys[$i]."</b></td>";
-            }
-          }
-        ?>
-        </tr>
-        <?php
-           $i = 0;
-           $sql = $_SESSION['sqlRequest'];
-           $query = mysqli_query($db,$sql);
-           while ($row = mysqli_fetch_array($query)) {
-            echo "<tr>";
-            for ($k=0; $k <sizeof($row)/2; $k+=1){
-              echo "<td>".$row[$k]."</td>";
-            }
-            $i = ($i==0) ? 1:0;
-           }
-
-        ?>
-    </table>
-    <br><br>
-    <script>
-    function highlight(e) {
-        if (selected[0]) selected[0].className = '';
-        e.target.parentNode.className = 'selected';
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <link href="style/main.css" rel="stylesheet">
+  <style>
+    .demo-card-wide.mdl-card{
+      width: 87%;
+      opacity:0.7;
     }
+    .demo-card-wide > .mdl-card__title {
+      color: #fff;
+      height: 120px;
+      background: url('img/welcome.jpg') center / cover;
+    }
+    .demo-card-wide > .mdl-card__menu {
+      color: #fff;
+    }
+  </style>
 
-    var table = document.getElementById('mainTable'),
-    selected = table.getElementsByClassName('selected');
-    table.onclick = highlight;
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.13/css/dataTables.bootstrap.min.css">
+  <script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.10.13/js/dataTables.bootstrap.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.0/css/font-awesome.min.css">
+  <!-- Bootstrap core CSS -->
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="css/jquery-ui-timepicker-addon.css" rel="stylesheet">
 
-    function fnselect($tickets){
-        if ($("tr.selected td:first" ).html() == null){
-          alert("You must select a show!");
-        }else{
-          window.location.replace('main.php?buyTicket=' + $("tr.selected td:first" ).html() + '&tickets=' + Math.abs($tickets));
+  <!-- Material Design Bootstrap -->
+  <link href="css/mdb.min.css" rel="stylesheet">
+  <script src="jquery.iMissYou.js"></script>
+  <script src="js/jquery-ui-timepicker-addon.js"></script>
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+  <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+
+  <script type="text/javascript" src="https://storage.googleapis.com/code.getmdl.io/1.3.0/material.min.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="https://storage.googleapis.com/code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+  
+  <script type="text/javascript" src="https://rawgit.com/MEYVN-digital/mdl-selectfield/master/mdl-selectfield.min.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="https://rawgit.com/MEYVN-digital/mdl-selectfield/master/mdl-selectfield.min.css">
+
+  <script>
+    jQuery(document).ready(function($){
+      $.iMissYou({
+        title: "I Miss you !",
+        favicon: {
+          enabled: true,
+          src:'iMissYouFavicon.ico'
         }
-        
+      });
+    });
+    jQuery(document).ready(function($){
+     $(".lcheckbox").labelauty();
+     $(".to-labelauty-icon").labelauty({ label: false });
+     $( ".fromdatepicker" ).datepicker();
+     $( ".todatepicker" ).datepicker();
+     $(".datepicker").datetimepicker();
+     $('#mainTable').DataTable();
+   });
+
+    function checkcheck(){
+
+
+      var temp3 = document.getElementsByName("toDate").value;
+      if(temp3 != 'undefined'){
+        document.getElementsByName("toDateCb").checked(true);
+      }
+      alert("temp6");
+      var temp4 = document.getElementsByName("locationName").value;
+      if(temp4 != 'undefined'){
+        document.getElementsByName("locationNameCb").checked(true);
+      }
+      var temp5 = document.getElementsByName("theaterName").value;
+      if(temp5 != 'undefined'){
+        document.getElementsByName("theaterNameCb").checked(true);
+      }
+      var temp6 = document.getElementsById("showId").value;
+      if(temp6 != 'undefined'){
+        document.getElementsByName("showIdCb").value = "Yes";
+      }
+
     }
+  </script>
+
+  <link rel="stylesheet" href="bower_components/jquery-labelauty/source/jquery-labelauty.css" type="text/css"  media="screen" charset="utf-8">
+  <script type="text/javascript" src="bower_components/jquery-labelauty/source/jquery-labelauty.js"></script>
+
+
+  <title>Sineplex</title>
+</head>
+<body>
+  <div class="content">
+    <div class="white-card demo-card-wide mdl-card"></div>
+  </div><!--end of content-->
+  <br>
+  <br>
+
+  <!-- welcome msg, current query, and log out -->
+  <div class="container" align="middle">
+    <div class="demo-card-wide mdl-card mdl-shadow--2dp">
+      <div class="mdl-card__title">
+        <h2 class="mdl-card__title-text">Welcome <?= $_SESSION['username']?></h2>
+      </div>
+      <div class="mdl-card__supporting-text">
+        Query is <?= $_SESSION['sqlRequest']?>
+      </div>
+      <div class="mdl-card__actions mdl-card--border">
+        <a href="logout.php" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">
+        Log out</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- search -->
+  <div class="container">
+    <h2>Search By</h2><br>
+    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+      <!-- First row -->
+      <div class="row">
+        <!-- <div class="col-md-0.6"></div> -->
+        <!--First column-->
+        <div class="col-md-2">
+          <input class="to-labelauty synch-icon lcheckbox" type="checkbox" name="hideShowtimeCb" data-labelauty="Hide Showtime" value = "Yes"/>   
+        </div>
+        <!--Second column-->
+        <div class="col-md-2">
+          <input class="to-labelauty synch-icon lcheckbox" type="checkbox" name="hideTheaterNameCb" data-labelauty="Hide TheaterName" value = "Yes"/>
+        </div>
+        <!--Third column-->
+        <div class="col-md-2">
+          <input class="to-labelauty synch-icon lcheckbox" type="checkbox" name="hideLocationCb" data-labelauty="Hide Location" value = "Yes"/>
+        </div>
+        <!--4th column-->
+        <div class="col-md-2">
+          <input class="to-labelauty synch-icon lcheckbox" type="checkbox" name="hideNameCb" data-labelauty="Hide Name" value = "Yes"/>   
+        </div>
+        <!--5th column-->
+        <div class="col-md-2">
+          <input class="to-labelauty synch-icon lcheckbox" type="checkbox" name="hideSeatsCb" data-labelauty="Hide Seats" value = "Yes"/>
+        </div>
+        <!--6th column-->
+        <div class="col-md-2">
+          <input class="to-labelauty synch-icon lcheckbox" type="checkbox" name="searchTickets" data-labelauty="Search from Purchased" value = "Yes"/>
+        </div>
+        <!-- <div class="col-md-0.6"></div> -->
+      </div>
+      <br>
+      <!--Second row-->
+      <div class="row">
+
+        <!--First column-->
+        <div class="col-md-3">
+          <div class="md-form">
+            <i class="fa fa-file-text prefix" aria-hidden="true"></i>
+            <input type="text" id="form76" class="form-control validate md-textarea" name = "movieName">
+            <label for="form76" data-error="wrong" data-success="right">Movie Title</label>
+          </div>
+        </div>
+        <div class="col-md-1">
+          <input type="checkbox" name="movieNameCb" class="to-labelauty-icon" value="Yes" checked=true/>
+        </div>
+
+        <!--Second column-->
+        <div class="col-md-3">
+          <div class="md-form">
+            <i class="fa fa-location-arrow prefix" aria-hidden="true"></i>
+            <input type="text" id="form76" class="form-control validate" name = "locationName" value = >
+            <label for="form76" data-error="wrong" data-success="right">Theatre Location</label>
+          </div>
+        </div>
+        <div class="col-md-1">
+          <input type="checkbox" name="locationNameCb" class="to-labelauty-icon" value="Yes"/>
+        </div>
+
+
+        <!--Third column-->
+        <div class="col-md-3">
+          <div class="md-form">
+            <i class="fa fa-user prefix" aria-hidden="true"></i>
+            <input type="text" id="form76" class="form-control validate" name = "theaterName">
+            <label for="form76" data-error="wrong" data-success="right">Theatre Name</label>
+          </div>
+        </div>
+        <div class="col-md-1">
+          <input type="checkbox" name="theaterNameCb" class="to-labelauty-icon" value="Yes"/>
+        </div>
+      </div>
+      <!--Third row-->
+      <div class="row">
+        <!--First column-->
+        <div class="col-md-3">
+          <div class="md-form">
+            <i class="fa fa-snapchat-ghost prefix" aria-hidden="true"></i>
+            <input type="number" id="showId" class="form-control validate" name = "showId">
+            <label for="form76" data-error="wrong" data-success="right">Show ID</label>
+          </div>
+        </div>
+        <div class="col-md-1">
+         <input type="checkbox" name="showIdCb" class="to-labelauty-icon" value="Yes"/>
+        </div>
+
+       <!--Second column-->
+       <div class="col-md-3">
+         <input type="checkbox" name="fromDateCb" value="Yes" class = "hidden"/><p>From Date: <input id = "fromDate" class="datepicker" name = "fromDate" value="2017-03-03T00:00"></p>
+       </div>
+       <div class="col-md-1">
+         <input type="checkbox" name="fromDateCb" class="to-labelauty-icon" value="Yes"/>
+       </div>
+
+       <!--Second column-->
+       <div class="col-md-3">
+        <input type="checkbox" name="toDateCb" value="Yes" class = "hidden"/><p>To Date: <input  id = "toDate" class="datepicker" name = "toDate"></p>
+       </div>
+       <div class="col-md-1">
+       <input type="checkbox" name="toDateCb" class="to-labelauty-icon" value="Yes"/>
+       </div>
+      </div>
+
+      <div class="row">
+        <!--Third column-->
+        <div class="col-md-2"></div>
+        <div class="col-md-3">
+          <div class="md-form">
+            <input type = "submit" class="myButton" value = " Submit " onclick="checkcheck();"/>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="md-form">
+          <input type="button" class="myButton" value='Buy!' onclick='fnselect(document.getElementsByName("numberOfTickets")[0].value) '/></div>
+        </div>
+        <div class="col-md-2">
+          <div class="md-form">
+          <input type="number" min="0" defaultValue=1 placeholder=1 name = "numberOfTickets" id="form76" class="form-control validate md-textarea"> <label for="form76" data-error="wrong" data-success="right">Number of tickets</label></div>
+        </div>
+        <div class="col-md-2"></div>
+      </div>
+    </form>
+  </div><!--end of container-->
+
+  <!-- filters -->
+  <div class="container">
+    <h2> More search filters</h2> <br>
+    <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+      <div class="row">
+        <div class="col-md-1">
+          <input class="to-labelauty-icon" type="radio" name="statsOperation" value="statsAvgSeats"/> 
+        </div>
+        <div class="col-md-5">
+          <p><b>List Arranges with number of seats</b></p>
+          <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label" style="width:90px">
+           <select name="statsAvgSeatsOp" class="mdl-selectfield__select">
+            <option value="greater">GREATER</option>
+            <option value="less">LESS</option>
+           </select>
+          </div>
+          <p><b>than or equal to average</b></p>
+        </div>
+
+        <div class="col-md-1">
+          <input class="to-labelauty-icon" type="radio" name="statsOperation" value="statsAvgDuration" /> 
+        </div>
+        <div class="col-md-5">
+          <p><b>List Movies with duration </b></p>
+          <div class="mdl-selectfield mdl-js-selectfield mdl-selectfield--floating-label" style="width:90px">
+
+           <select name="statsAvgDurationOp" class="mdl-selectfield__select">
+            <option value="greater">GREATER</option>
+            <option value="less">LESS</option>
+           </select>
+          </div>
+          <p><b>than or equal to average duration</b></p>
+        </div>
+      </div>  
+
+      <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+          <div class="md-form">
+            <input class="myButton" type = "submit" value = " Submit "/>
+          </div>
+        </div>
+        <div class="col-md-4"></div>
+      </div>
+    </form>
+  </div>
+
+<div class="container">
+<table id="mainTable" class="table table-bordered">
+  <tr>
+    <?php
+    $sql = $_SESSION['sqlRequest'];
+    $query = mysqli_query($db,$sql);
+    $row = mysqli_fetch_array($query);
+    if (sizeof($row) > 0){
+      $the_keys = array_keys($row);
+      for ($i=1; $i <sizeof($the_keys)+1; $i+=2){
+        echo "<td><b>".$the_keys[$i]."</b></td>";
+      }
+    }
+    ?>
+  </tr>
+  <?php
+  $i = 0;
+  $sql = $_SESSION['sqlRequest'];
+  $query = mysqli_query($db,$sql);
+  while ($row = mysqli_fetch_array($query)) {
+    echo "<tr>";
+    for ($k=0; $k <sizeof($row)/2; $k+=1){
+      echo "<td>".$row[$k]."</td>";
+    }
+    $i = ($i==0) ? 1:0;
+  }
+
+  ?>
+</table>
+</div>
+<br><br>
+<br><br>
+<script>
+  function highlight(e) {
+    if (selected[0]) selected[0].className = '';
+    e.target.parentNode.className = 'selected';
+  }
+
+  var table = document.getElementById('mainTable'),
+  selected = table.getElementsByClassName('selected');
+  table.onclick = highlight;
+
+  function fnselect($tickets){
+    if ($("tr.selected td:first" ).html() == null){
+      alert("You must select a show!");
+    }else{
+      window.location.replace('main.php?buyTicket=' + $("tr.selected td:first" ).html() + '&tickets=' + Math.abs($tickets));
+    }
+  }
+
 </script>
-    </body>
+
+<!-- SCRIPTS -->
+<!-- JQuery -->
+<script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>
+<!-- Bootstrap tooltips -->
+<script type="text/javascript" src="js/tether.min.js"></script>
+<!-- Bootstrap core JavaScript -->
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+<!-- MDB core JavaScript -->
+<script type="text/javascript" src="js/mdb.min.js"></script>
+</body>
 </html>
