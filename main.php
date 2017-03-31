@@ -349,7 +349,7 @@ if (isset($_POST['statsOperation'])) {
         </div>
         <div class="col-md-2">
           <div class="md-form">
-          <input type="number" min="0" defaultValue=1 placeholder=1 name = "numberOfTickets" id="form76" class="form-control validate md-textarea"> <label for="form76" data-error="wrong" data-success="right">Number of tickets</label></div>
+          <input type="number" min="0" value=1 name = "numberOfTickets" id="form76" class="form-control validate md-textarea"> <label for="form76" data-error="wrong" data-success="right">Number of tickets</label></div>
         </div>
         <div class="col-md-2"></div>
       </div>
