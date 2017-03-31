@@ -15,16 +15,6 @@ OpenTime time,
 CloseTime time
 );
 
-CREATE TABLE ticket
-( 
-ConfirmationNo int PRIMARY KEY AUTO_INCREMENT,
-SeatsNo int,
-AuditoriumNo int,
-CEmail char(255),
-ArrangeId int,
-CONSTRAINT FK_ArrangeId FOREIGN KEY (ArrangeId) references Arrange(ArrangeId),
-CONSTRAINT FK_CEmail FOREIGN KEY (CEmail) references Customer(CEmail) ON DELETE CASCADE
-);
 
 CREATE TABLE movie
 (
@@ -61,6 +51,43 @@ CONSTRAINT FK_Location FOREIGN KEY (Location) REFERENCES Theater(Location) ON DE
 CONSTRAINT FK_Name FOREIGN KEY (Name) REFERENCES Movie(Name) ON DELETE CASCADE,
 CONSTRAINT CHK_Seats CHECK (SeatsLeft>=0)
 );
+
+CREATE TABLE ticket
+( 
+ConfirmationNo int PRIMARY KEY AUTO_INCREMENT,
+SeatsNo int,
+AuditoriumNo int,
+CEmail char(255),
+ArrangeId int,
+CONSTRAINT FK_ArrangeId FOREIGN KEY (ArrangeId) references Arrange(ArrangeId),
+CONSTRAINT FK_CEmail FOREIGN KEY (CEmail) references Customer(CEmail) ON DELETE CASCADE
+);
+
+INSERT INTO `customer` (`CEmail`, `Age`, `CPassword`) VALUES ('Willian@gmail.com', 14, 'password');
+INSERT INTO `customer` (`CEmail`, `Age`, `CPassword`) VALUES ('Leola@gmail.com', 23, 'password');
+INSERT INTO `customer` (`CEmail`, `Age`, `CPassword`) VALUES ('Zane@gmail.com', 33, 'password');
+INSERT INTO `customer` (`CEmail`, `Age`, `CPassword`) VALUES ('Nerissa@gmail.com', 24, 'password');
+INSERT INTO `customer` (`CEmail`, `Age`, `CPassword`) VALUES ('Anamaria@gmail.com', 42, 'password');
+INSERT INTO `customer` (`CEmail`, `Age`, `CPassword`) VALUES ('Daisey@gmail.com', 27, 'password');
+INSERT INTO `customer` (`CEmail`, `Age`, `CPassword`) VALUES ('Rufina@gmail.com', 26, 'password');
+INSERT INTO `customer` (`CEmail`, `Age`, `CPassword`) VALUES ('Shandra@gmail.com', 41, 'password');
+INSERT INTO `customer` (`CEmail`, `Age`, `CPassword`) VALUES ('Brianna@gmail.com', 47, 'password');
+INSERT INTO `customer` (`CEmail`, `Age`, `CPassword`) VALUES ('Socorro@gmail.com', 37, 'password');
+INSERT INTO `customer` (`CEmail`, `Age`, `CPassword`) VALUES ('Luanna@gmail.com', 49, 'password');
+INSERT INTO `customer` (`CEmail`, `Age`, `CPassword`) VALUES ('Georgie@gmail.com', 41, 'password');
+INSERT INTO `customer` (`CEmail`, `Age`, `CPassword`) VALUES ('Isreal@gmail.com', 33, 'password');
+INSERT INTO `customer` (`CEmail`, `Age`, `CPassword`) VALUES ('Jeni@gmail.com', 43, 'password');
+INSERT INTO `customer` (`CEmail`, `Age`, `CPassword`) VALUES ('Ahmed@gmail.com', 29, 'password');
+INSERT INTO `customer` (`CEmail`, `Age`, `CPassword`) VALUES ('Lazaro@gmail.com', 31, 'password');
+INSERT INTO `customer` (`CEmail`, `Age`, `CPassword`) VALUES ('Eliz@gmail.com', 43, 'password');
+INSERT INTO `customer` (`CEmail`, `Age`, `CPassword`) VALUES ('Alonso@gmail.com', 28, 'password');
+INSERT INTO `customer` (`CEmail`, `Age`, `CPassword`) VALUES ('Dorinda@gmail.com', 44, 'password');
+INSERT INTO `customer` (`CEmail`, `Age`, `CPassword`) VALUES ('Karoline@gmail.com', 31, 'password');
+INSERT INTO `customer` (`CEmail`, `Age`, `CPassword`) VALUES ('Retha@gmail.com', 15, 'password');
+INSERT INTO `customer` (`CEmail`, `Age`, `CPassword`) VALUES ('Vanda@gmail.com', 41, 'password');
+INSERT INTO `customer` (`CEmail`, `Age`, `CPassword`) VALUES ('Oda@gmail.com', 43, 'password');
+INSERT INTO `customer` (`CEmail`, `Age`, `CPassword`) VALUES ('Zoila@gmail.com', 17, 'password');
+INSERT INTO `customer` (`CEmail`, `Age`, `CPassword`) VALUES ('Leann@gmail.com', 29, 'password');
 
 INSERT INTO `theater` (`Location`, `Name`, `OpenTime`, `CloseTime`) VALUES ('Highstreet Shopping Centre, 3122 Mount Lehman Rd J200, Abbotsford, BC V4X 2K9', 'Cineplex Cinemas Abbotsford and VIP', '08:00:00', '23:00:00');
 INSERT INTO `theater` (`Location`, `Name`, `OpenTime`, `CloseTime`) VALUES ('Metropolis at Metrotown, 4700 Kingsway, Burnaby, BC V5H 4M1', 'Cineplex Cinemas Metropolis', '08:00:00', '23:00:00');

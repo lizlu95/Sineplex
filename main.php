@@ -23,9 +23,12 @@ if ($_SERVER["REQUEST_METHOD"] == "GET"){
       for ($x = $_GET["tickets"]; $x > 0; $x--) {
         $sql = "INSERT into ticket(AuditoriumNo, CEmail, ArrangeId, SeatsNo) VALUES (1, '" . $_SESSION['username'] ."','" .$_GET["buyTicket"] ."', 1);";
         mysqli_query($db, $sql);
-        echo "Insert query: " . $sql . "<br>";
       }
-      header("location:index.php");
+        echo '<script language="javascript">';
+        echo 'alert("Successfully bought tickets!")';
+        echo '</script>';
+        echo "Insert query: " . $sql . "<br>";
+        //header("location:index.php");
     }else{
       echo "ERROR: No Seats Available. <br>";
     }
