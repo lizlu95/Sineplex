@@ -196,35 +196,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       <div class="row">
 
         <div class="col-md-1"><input class="to-labelauty-icon" type="radio" name="delOperation" value="delUser"/></div>
-        <div class="col-md-3"><div class="md-form">
-        <input type = "text" id="form76" class="form-control validate md-textarea" name="delUser">
-        <label for="form76" data-error="wrong" data-success="right">Delete User</label>
+        <div class="col-md-3"><div class="md-form mdl-textfield mdl-js-textfield">
+        <input type = "text" id="form76" class="mdl-textfield__input" name="delUser">
+        <label class="mdl-textfield__label" for="form76">Delete User</label>
         </div></div>
 
         <div class="col-md-1"><input class="to-labelauty-icon" type="radio" name="delOperation" value="delMovie"/></div>
-        <div class="col-md-3"><div class="md-form">
-        <input type = "text" id="form76" class="form-control validate md-textarea" name="delMovie">
-        <label for="form76" data-error="wrong" data-success="right">Delete Movie</label>
+        <div class="col-md-3"><div class="md-form mdl-textfield mdl-js-textfield">
+        <input type = "text" id="form76" class="mdl-textfield__input" name="delMovie">
+        <label class="mdl-textfield__label" for="form76">Delete Movie</label>
         </div></div>
 
         <div class="col-md-1"><input class="to-labelauty-icon" type="radio" name="delOperation" value="delArrange"/></div>
-        <div class="col-md-3"><div class="md-form">
-        <input type = "text" id="form76" class="form-control validate md-textarea" name="delArrange">
-        <label for="form76" data-error="wrong" data-success="right">Delete Arrange</label>
+        <div class="col-md-3"><div class="md-form mdl-textfield mdl-js-textfield">
+        <input type = "text" id="form76" class="mdl-textfield__input" name="delArrange">
+        <label class="mdl-textfield__label" for="form76">Delete Arrange</label>
         </div></div>
       </div>
       <div class="row">
 
         <div class="col-md-1"><input class="to-labelauty-icon" type="radio" name="delOperation" value="delTheatre"/></div>
-        <div class="col-md-3"><div class="md-form">
-        <input type = "text" id="form76" class="form-control validate md-textarea" name="delTheatre">
-        <label for="form76" data-error="wrong" data-success="right">Delete Theatre</label>
+        <div class="col-md-3"><div class="md-form mdl-textfield mdl-js-textfield">
+        <input type = "text" id="form76" class="mdl-textfield__input" name="delTheatre">
+        <label class="mdl-textfield__label" for="form76">Delete Theatre</label>
         </div></div>
 
         <div class="col-md-1"><input class="to-labelauty-icon" type="radio" name="delOperation" value="delTicket"/></div>
-        <div class="col-md-3"><div class="md-form">
-        <input type = "text" id="form76" class="form-control validate md-textarea" name="delTicket">
-        <label for="form76" data-error="wrong" data-success="right">Delete Ticket</label>
+        <div class="col-md-3"><div class="md-form mdl-textfield mdl-js-textfield">
+        <input type = "text" id="form76" class="mdl-textfield__input" name="delTicket">
+        <label class="mdl-textfield__label" for="form76">Delete Ticket</label>
         </div></div>
       </div>
       <div class="row">
@@ -323,11 +323,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="col-md-1">
           <input class="to-labelauty-icon" type="radio" name="statsOperation" value="statsSpecificMovie"/>
         </div>
-        <div class="col-md-5"><div class="md-form">
-          <p><b>List all users that bought this movie: </b></p>
-          <input type = "text" id="form76" class="form-control validate md-textarea" name = "statsSpecificMovieName">
-          <label for="form76" data-error="wrong" data-success="right">Movie Title</label>
-          of the averages of seats left for all arranges, by theater</b></p>
+        
+        <div class="col-md-5">
+        <p><b>List all users that bought this movie: </b></p>
+        <div class="md-form mdl-textfield mdl-js-textfield">
+          <input type = "text" id="form76" class="mdl-textfield__input" name = "statsSpecificMovieName">
+          <label class="mdl-textfield__label" for="form76">Movie Title</label>
+          <p><b>of the averages of seats left for all arranges, by theatre</b></p>
         </div></div>
       </div>
       <div class="row">
@@ -345,24 +347,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <div class="col-md-2"><input class="to-labelauty-icon" type="radio" name="insertOperation" value="insertMovie"/><b>Insert a movie</b></div>
 
-        <div class="col-md-2"><div class="md-form">
-        <input type = "text" id="form76" class="form-control validate md-textarea" name="movieName">
-        <label for="form76" data-error="wrong" data-success="right">Movie</label>
+        <div class="col-md-2"><div class="md-form mdl-textfield mdl-js-textfield">
+        <input type = "text" id="form76" class="mdl-textfield__input" name="movieName">
+        <label class="mdl-textfield__label" for="form76">Movie</label>
         </div></div>
 
-        <div class="col-md-2"><div class="md-form">
-        <input type = "text" id="form76" class="form-control validate md-textarea" name="movieRating">
-        <label for="form76" data-error="wrong" data-success="right">Rating</label>
+        <div class="col-md-2"><div class="md-form mdl-textfield mdl-js-textfield">
+        <input type = "text" id="form76" class="mdl-textfield__input" name="movieRating">
+        <label class="mdl-textfield__label" for="form76">Rating</label>
         </div></div>
 
-        <div class="col-md-2"><div class="md-form">
-        <input type = "number" id="form76" class="form-control validate md-textarea" name="movieDuration">
-        <label for="form76" data-error="wrong" data-success="right">Duration</label>
+        <div class="col-md-2"><div class="md-form mdl-textfield mdl-js-textfield">
+        <input type = "number" id="form76" class="mdl-textfield__input" name="movieDuration">
+        <label class="mdl-textfield__label" for="form76">Duration</label>
+        <span class="mdl-textfield__error">Input is not a number!</span>
         </div></div>
 
-        <div class="col-md-2"><div class="md-form">
-        <input type = "number" id="form76" class="form-control validate md-textarea" name="moviePrice">
-        <label for="form76" data-error="wrong" data-success="right">Price</label>
+        <div class="col-md-2"><div class="md-form mdl-textfield mdl-js-textfield">
+        <input type = "number" id="form76" class="mdl-textfield__input" name="moviePrice">
+        <label class="mdl-textfield__label" for="form76">Price</label>
+        <span class="mdl-textfield__error">Input is not a number!</span>
         </div></div>
 
         <div class="col-md-2"><div class="md-form">
@@ -373,14 +377,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="col-md-2">
         <input type="radio" class="to-labelauty-icon" name="insertOperation" value="insertArranges" /><b>Insert an Arrange</b></div>
 
-        <div class="col-md-2"><div class="md-form">
-        <input type = "text" id="form76" class="form-control validate md-textarea" name="arrangeMovie">
-        <label for="form76" data-error="wrong" data-success="right">Movie</label>
+        <div class="col-md-2"><div class="md-form mdl-textfield mdl-js-textfield">
+        <input type = "number" id="form76" class="mdl-textfield__input" name="arrangeMovie">
+        <label class="mdl-textfield__label" for="form76">Movie</label>
         </div></div>
 
-        <div class="col-md-2"><div class="md-form">
-        <input type = "text" id="form76" class="form-control validate md-textarea" name="arrangeSeats">
-        <label for="form76" data-error="wrong" data-success="right">Seat number</label>
+        <div class="col-md-2"><div class="md-form mdl-textfield mdl-js-textfield">
+        <input type = "number" id="form76" class="mdl-textfield__input" name="arrangeSeats">
+        <label class="mdl-textfield__label" for="form76" data-error="wrong" data-success="right">Seat number</label>
         </div></div>
 
         <div class="col-md-2"><div class="md-form">
@@ -431,18 +435,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (selected[0]) selected[0].className = '';
         e.target.parentNode.className = 'selected';
     }
-
     var table = document.getElementById('mainTable'),
     selected = table.getElementsByClassName('selected');
     table.onclick = highlight;
-
-    function fnselect(){
-        if ($("tr.selected td:first" ).html() == null){
-          alert("You must select a show!");
-        }else{
-          alert($("tr.selected td:first" ).html());
-        }
-    }
 </script>
   <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
   <script src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
