@@ -1,0 +1,14 @@
+Zijing Lu
+31463145
+i2v9a
+group 28 Sineplex
+
+We pretty much did what we planned for, with small modifications as we go and see the project clearer as a whole. We worked almost entirely remotely, with several group meetings before the milestones. We communicate through FB and use stash to work together. 
+For the milestones we all meet together and discuss to arrive at a set of answers. We use Google docs to continue our work when we are not together. For the final project itself, I did the UI part along with some modifications on the PHP part just to make everything more compatible. I managed to make the UI from plain text to be much more user-friendly, although the big picture constrained me on how much I could modify. I feel if we had more time we could let the query part to make more sense and so will the UI. 
+
+Zijing Lu: 5. Without the work I have done the project would be bare-boned and plain and to a degree not complete.
+Xi Yang: 4. She helped us to test and debug and write queries as we build up this project, also provided some important insights on how the big picture should look like. 
+Haoming Sun: 3. She didn't do a major part of the project but she helped each of us to solve the problems as we go. 
+Patrick Tseng: 5. With his skill in PHP and the help to host the web on our own I would say he put significant effort into this project.
+
+I spent ~35 hrs on the project. I feel like the group size is bigger than what we need, 2-3 people would be the best and more efficient. I liked that it involves a lot of self-learning, which has enhanced my skills in many aspects. 
